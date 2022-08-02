@@ -7,17 +7,9 @@
             text-align: center;
         }
 
-        /*
-        Always prefix your styles with a unique selector your widget has
-        to prevent your styles from affecting other elements of the same
-        selector pattern. In this case, only those under .stopwatch gets
-        affected.
-        */
         .stopwatch .controls {
             font-size: 12px;
         }
-
-        /* I'd rather stick to CSS rather than JS  for styling */
 
         .stopwatch .controls button {
             padding: 5px 15px;
@@ -53,7 +45,6 @@
                     let url = $(this).data('url');
                     let loggedTime = hours + ':' + minutes + ':' + seconds;
                     let description = $('.description').val();
-
 
                     if (description.length === 0) {
                         alert('Description can not be empty');
