@@ -3,7 +3,7 @@
 {% block stylesheets %}
     <style>
         body {
-            font-family:"Arial", Helvetica, sans-serif;
+            font-family: "Arial", Helvetica, sans-serif;
             text-align: center;
         }
 
@@ -19,9 +19,9 @@
 
         /* I'd rather stick to CSS rather than JS  for styling */
 
-        .stopwatch .controls button{
+        .stopwatch .controls button {
             padding: 5px 15px;
-            background :#EEE;
+            background: #EEE;
             border: 3px solid #06C;
             border-radius: 5px
         }
@@ -43,6 +43,41 @@
 {% block javascripts %}
     {{ parent() }}
     {% if app.user is not null %}
-    <script src="{{ asset('assets/js/stopwatch.js') }}"></script>
+        <script src="{{ asset('assets/js/stopwatch.js') }}"></script>
+        <script>
+            $(document).ready(function () {
+                $('.save-record').click(function () {
+                    let hours = $('span.hours').text();
+                    let minutes = $('span.minutes').text();
+                    let seconds = $('span.seconds').text();
+                    let url = $(this).data('url');
+                    let loggedTime = hours + ':' + minutes + ':' + seconds;
+                    let description = $('.description').val();
+
+
+                    if (description.length === 0) {
+                        alert('Description can not be empty');
+                    } else {
+                        if (seconds === '00') {
+                            alert('Can not save empty timer');
+                        }
+                    }
+
+                    if (description.length > 0 && seconds !== '00') {
+                        $.ajax({
+                            url: url,
+                            method: 'post',
+                            data: {
+                                loggedTime: loggedTime,
+                                description: description
+                            },
+                            success: function(result){
+                                window.location.replace(result.redirectPath);
+                            }
+                        });
+                    }
+                });
+            })
+        </script>
     {% endif %}
 {% endblock %}

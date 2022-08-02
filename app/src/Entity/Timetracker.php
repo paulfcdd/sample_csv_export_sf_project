@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\TimetrackerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: TimetrackerRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Timetracker
 {
     #[ORM\Id]
@@ -61,7 +63,7 @@ class Timetracker
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User|UserInterface $user): self
     {
         $this->user = $user;
 
@@ -73,9 +75,10 @@ class Timetracker
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    #[ORM\PrePersist]
+    public function setCreatedAt(): self
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime();
 
         return $this;
     }

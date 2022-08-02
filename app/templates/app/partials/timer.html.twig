@@ -10,5 +10,48 @@
             <button class="toggle" data-pausetext="Pause" data-resumetext="Resume">Start</button>
             <button class="reset">Reset</button>
         </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <textarea placeholder="description" name="description" class="description"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-primary save-record" data-url="{{ path('app.timesheet.save') }}">Save timesheet</button>
+                </div>
+            </div>
+            {% if timetrackerEntries is not null %}
+                <div class="row">
+                    <div class="col">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Time spent</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for timetrackerEntry in timetrackerEntries %}
+                                <tr>
+                                    <th scope="row">{{ timetrackerEntry.id }}</th>
+                                    <td>{{ timetrackerEntry.timeSpent }}</td>
+                                    <td>{{ timetrackerEntry.description }}</td>
+                                    <td>{{ timetrackerEntry.createdAt | date('d.m.Y') }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+
+{#        <div class="">#}
+
+{#        </div>#}
     </div>
 </div>
