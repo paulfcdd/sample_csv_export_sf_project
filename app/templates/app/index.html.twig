@@ -1,5 +1,48 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <style>
+        body {
+            font-family:"Arial", Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        /*
+        Always prefix your styles with a unique selector your widget has
+        to prevent your styles from affecting other elements of the same
+        selector pattern. In this case, only those under .stopwatch gets
+        affected.
+        */
+        .stopwatch .controls {
+            font-size: 12px;
+        }
+
+        /* I'd rather stick to CSS rather than JS  for styling */
+
+        .stopwatch .controls button{
+            padding: 5px 15px;
+            background :#EEE;
+            border: 3px solid #06C;
+            border-radius: 5px
+        }
+
+        .stopwatch .time {
+            font-size: 150%;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <h1>test</h1>
+    {% if app.user is null %}
+        {% include 'app/partials/not_logged.html.twig' %}
+    {% else %}
+        {% include 'app/partials/timer.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if app.user is not null %}
+    <script src="{{ asset('assets/js/stopwatch.js') }}"></script>
+    {% endif %}
 {% endblock %}

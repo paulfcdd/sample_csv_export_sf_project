@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,6 +28,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Timetracker::class)]
+    private Collection $timetrackers;
+
+    public function __construct()
+    {
+        $this->timetrackers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -95,5 +105,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Timetracker>
+     */
+    public function getTimetrackers(): Collection
+    {
+        return $this->timetrackers;
+    }
+
+    public function addTimetracker(Timetracker $timetracker): self
+    {
+        if (!$this->timetrackers->contains($timetracker)) {
+            $this->timetrackers->add($timetracker);
+            $timetracker->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTimetracker(Timetracker $timetracker): self
+    {
+        if ($this->timetrackers->removeElement($timetracker)) {
+            // set the owning side to null (unless already changed)
+            if ($timetracker->getUser() === $this) {
+                $timetracker->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
