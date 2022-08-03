@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Timetracker;
+use App\Service\CsvExporter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,10 +13,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class AppController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    private CsvExporter $csvExporter;
+    public function __construct(EntityManagerInterface $entityManager, CsvExporter $csvExporter)
     {
         $this->entityManager = $entityManager;
+        $this->csvExporter = $csvExporter;
     }
 
     #[Route('/', name: 'app.index')]
@@ -31,11 +33,10 @@ class AppController extends AbstractController
             $timetrackerEntries = $this->entityManager
                 ->getRepository(Timetracker::class)
                 ->getFilteredEntries($this->getUser(), $startDateTimeObject, $endDateTimeObject);
-
-            dump($timetrackerEntries);
-
         } else {
-            $timetrackerEntries = $this->getUser() ? $this->entityManager->getRepository(Timetracker::class)->findBy(['user' => $this->getUser()->getId()]) : null;
+            $timetrackerEntries = $this->getUser()
+                ? $this->entityManager->getRepository(Timetracker::class)->findBy(['user' => $this->getUser()->getId()])
+                : null;
         }
 
         return $this->render('app/index.html.twig', [
@@ -58,5 +59,16 @@ class AppController extends AbstractController
             'message' => 'Entry saved',
             'redirectPath' => $this->generateUrl('app.index')
         ]);
+    }
+
+    #[Route('/data/export/csv', name: 'app.data.export.csv', methods: ['get'])]
+    public function exportDataToCsv(Request $request)
+    {
+        $data = $this->entityManager->getRepository(Timetracker::class)->findBy(['user' => $this->getUser()->getId()]);
+        $this->csvExporter->generateFile(
+            $data,
+            'timesheet_report'
+        );
+        return new JsonResponse();
     }
 }

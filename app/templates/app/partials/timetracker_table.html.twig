@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-6">
+    <div class="col-6 ">
         <form method="get">
             <div class="span5 col-md-5" id="sandbox-container">
                 <div class="input-daterange input-group" id="datepicker">
@@ -7,11 +7,15 @@
                     <span class="input-group-addon">to</span>
                     <input type="text" class="input-sm form-control" name="end">
                 </div>
+                <button class="btn btn-primary" type="submit">filter values</button>
             </div>
-            <button>filter values</button>
         </form>
     </div>
-    <div class="col-6">ghgf</div>
+    <div class="col-6">
+        <form method="get" action="{{ path('app.data.export.csv') }}">
+            <button class="btn btn-primary" id="generate-csv" type="submit" data-url="{{ path('app.data.export.csv') }}">Export to csv</button>
+        </form>
+    </div>
     <div class="col-12">
         <table class="table">
             <thead>
