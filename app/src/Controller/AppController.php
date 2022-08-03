@@ -24,19 +24,11 @@ class AppController extends AbstractController
     public function indexPage(Request $request)
     {
         if (!empty($request->query->all())) {
-            $startDate = $request->query->get('start');
-            $endDate = $request->query->get('end');
-
-            $startDateTimeObject = \DateTime::createFromFormat('d/m/Y', $startDate);
-            $endDateTimeObject = \DateTime::createFromFormat('d/m/Y', $endDate);
-
-            $timetrackerEntries = $this->entityManager
-                ->getRepository(Timetracker::class)
-                ->getFilteredEntries($this->getUser(), $startDateTimeObject, $endDateTimeObject);
+            $startDateTimeObject = \DateTime::createFromFormat('d/m/Y', $request->query->get('start'));
+            $endDateTimeObject = \DateTime::createFromFormat('d/m/Y', $request->query->get('end'));
+            $timetrackerEntries = $this->entityManager->getRepository(Timetracker::class)->getFilteredEntries($this->getUser(), $startDateTimeObject, $endDateTimeObject);
         } else {
-            $timetrackerEntries = $this->getUser()
-                ? $this->entityManager->getRepository(Timetracker::class)->findBy(['user' => $this->getUser()->getId()])
-                : null;
+            $timetrackerEntries = $this->getUser() ? $this->entityManager->getRepository(Timetracker::class)->findBy(['user' => $this->getUser()->getId()]) : null;
         }
 
         return $this->render('app/index.html.twig', [
