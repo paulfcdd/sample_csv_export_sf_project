@@ -1,5 +1,5 @@
-<div>
-    <div class="stopwatch" data-autostart="false">
+<div class="container">
+    <div class="row stopwatch mb-1" data-autostart="false">
         <div class="time">
             <span class="hours"></span> :
             <span class="minutes"></span> :
@@ -7,46 +7,22 @@
         </div>
         <div class="controls">
             <!-- Some configurability -->
-            <button class="toggle" data-pausetext="Pause" data-resumetext="Resume">Start</button>
-            <button class="reset">Reset</button>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <textarea placeholder="description" name="description" class="description"></textarea>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <button class="btn btn-primary save-record" data-url="{{ path('app.timesheet.save') }}">Save timesheet</button>
-                </div>
-            </div>
-            {% if timetrackerEntries is not null %}
-                <div class="row">
-                    <div class="col">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Time spent</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for timetrackerEntry in timetrackerEntries %}
-                                <tr>
-                                    <th scope="row">{{ timetrackerEntry.id }}</th>
-                                    <td>{{ timetrackerEntry.timeSpent }}</td>
-                                    <td>{{ timetrackerEntry.description }}</td>
-                                    <td>{{ timetrackerEntry.createdAt | date('d.m.Y') }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            {% endif %}
+            <button class="toggle btn btn-success" data-pausetext="Pause" data-resumetext="Resume">Start</button>
+            <button class="reset btn btn-danger">Reset</button>
         </div>
     </div>
+    <div class="row mb-1">
+        <div class="col">
+            <label for="timesheet-description">Describe Your work</label>
+            <textarea placeholder="description" name="description" class="description form-control" id="timesheet-description"></textarea>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col">
+            <button class="btn btn-primary save-record" data-url="{{ path('app.timesheet.save') }}">Save timesheet</button>
+        </div>
+    </div>
+    {% if timetrackerEntries is not null %}
+        {% include 'app/partials/timetracker_table.html.twig' with timetrackerEntries %}
+    {% endif %}
 </div>
