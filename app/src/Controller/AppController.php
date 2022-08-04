@@ -56,11 +56,12 @@ class AppController extends AbstractController
     #[Route('/data/export/csv', name: 'app.data.export.csv', methods: ['get'])]
     public function exportDataToCsv(Request $request)
     {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="timesheet_report_' . date('Ymd') . '.csv"');
+        header("Pragma: no-cache");
+        header("Expires: 0");
         $data = $this->entityManager->getRepository(Timetracker::class)->findBy(['user' => $this->getUser()->getId()]);
-        $this->csvExporter->generateFile(
-            $data,
-            'timesheet_report'
-        );
+        $this->csvExporter->generateFile($data);
         return new JsonResponse();
     }
 }
